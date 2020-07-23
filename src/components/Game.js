@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 import cookieSrc from "../cookie.svg";
 
+import Item from './Item';
+
 const items = [
   { id: "cursor", name: "Cursor", cost: 10, value: 1 },
   { id: "grandma", name: "Grandma", cost: 100, value: 10 },
@@ -34,7 +36,17 @@ const Game = () => {
 
       <ItemArea>
         <SectionTitle>Items:</SectionTitle>
-        {/* TODO: Add <Item> instances here, 1 for each item type. */}
+        {items.map(item => {
+          return (
+            <Item
+              key={item.id}
+              name={item.name}
+              cost={item.cost}
+              value={item.value}
+              purchasedItems={purchasedItems}
+            />
+          )
+        })}
       </ItemArea>
       <HomeLink to="/">Return home</HomeLink>
     </Wrapper>
@@ -72,6 +84,7 @@ const SectionTitle = styled.h3`
   text-align: center;
   font-size: 32px;
   color: yellow;
+  margin-bottom: 10px;
 `;
 
 const Indicator = styled.div`
