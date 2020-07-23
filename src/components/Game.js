@@ -14,7 +14,7 @@ const items = [
 ];
 
 const findItemValue = (id) => {
-  return items.find(item => item.id == id);
+  return items.find(item => item.id === id);
 }
 
 const calculateCookiesPerTick = purchasedItems => {
@@ -29,7 +29,6 @@ const calculateCookiesPerTick = purchasedItems => {
   return cursorCookies + grandmaCookies + farmCookies;
 };
 
-
 const Game = () => {
   const [cookieCount, setCookieCount] = React.useState(100);
   const [purchasedItems, setPurchasedItems] = React.useState(
@@ -39,6 +38,12 @@ const Game = () => {
       farm: 0,
     }
   );
+
+  const handleKeyPress = key => {
+    if (key.code === 'Space') {
+      setCookieCount(cookieCount + 1);
+    }
+  };
 
   useInterval(() => {
     const generatedCookies = calculateCookiesPerTick(purchasedItems);
@@ -52,7 +57,15 @@ const Game = () => {
     return () => {
       document.title = `Cookie Clicker`
     }
-  }, [cookieCount])
+  }, [cookieCount]);
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    }
+  });
 
   return (
     <Wrapper>
