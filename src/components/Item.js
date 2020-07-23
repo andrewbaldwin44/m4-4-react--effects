@@ -42,6 +42,7 @@ function Item({ id, name, cost, value, cookieCount, setCookieCount,
                 purchasedItems, setPurchasedItems }) {
 
   const amountPurchased = purchasedItems[id];
+  const focusItem = React.createRef();
 
   const handleClick = (id) => {
     if (cookieCount >= cost) {
@@ -54,21 +55,26 @@ function Item({ id, name, cost, value, cookieCount, setCookieCount,
     }
   }
 
+  React.useEffect(() => {
+    if (id === 'cursor') {
+      focusItem.current.focus();
+    }
+  }, []);
+
   return (
-    <>
-      <ItemContainer
-        onClick={() => handleClick(id)}
-      >
-        <ItemInfo>
-          <Name>{name}</Name>
-          <Info>
-            Cost: {cost} cookie{cost > 1 ? 's' : ''}.
-            Produces {value} cookie{value > 1 ? 's' : ''}/second.
-          </Info>
-        </ItemInfo>
-        <Purchased>{amountPurchased}</Purchased>
-      </ItemContainer>
-    </>
+    <ItemContainer
+      onClick={() => handleClick(id)}
+      ref={focusItem}
+    >
+      <ItemInfo>
+        <Name>{name}</Name>
+        <Info>
+          Cost: {cost} cookie{cost > 1 ? 's' : ''}.
+          Produces {value} cookie{value > 1 ? 's' : ''}/second.
+        </Info>
+      </ItemInfo>
+      <Purchased>{amountPurchased}</Purchased>
+    </ItemContainer>
   )
 }
 
