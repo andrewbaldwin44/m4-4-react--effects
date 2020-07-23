@@ -13,6 +13,23 @@ const items = [
   { id: "farm", name: "Farm", cost: 1000, value: 80 },
 ];
 
+const findItemValue = (id) => {
+  return items.find(item => item.id == id);
+}
+
+const calculateCookiesPerTick = purchasedItems => {
+  const cursorCookiesValue = findItemValue('cursor').value;
+  const grandmaCookiesValue = findItemValue('grandma').value;
+  const farmCookiesValue = findItemValue('farm').value;
+
+  const cursorCookies = purchasedItems.cursor * cursorCookiesValue;
+  const grandmaCookies = purchasedItems.grandma * grandmaCookiesValue;
+  const farmCookies = purchasedItems.farm * farmCookiesValue;
+
+  return cursorCookies + grandmaCookies + farmCookies;
+};
+
+
 const Game = () => {
   const [cookieCount, setCookieCount] = React.useState(100);
   const [purchasedItems, setPurchasedItems] = React.useState(
@@ -23,34 +40,26 @@ const Game = () => {
     }
   );
 
-  const findItemValue = (id) => {
-    return items.find(item => item.id == id);
-  }
-
-  const calculateCookiesPerTick = () => {
-    const cursorCookiesValue = findItemValue('cursor').value;
-    const grandmaCookiesValue = findItemValue('grandma').value;
-    const farmCookiesValue = findItemValue('farm').value;
-
-    const cursorCookies = purchasedItems.cursor * cursorCookiesValue;
-    const grandmaCookies = purchasedItems.grandma * grandmaCookiesValue;
-    const farmCookies = purchasedItems.farm * farmCookiesValue;
-
-    return cursorCookies + grandmaCookies + farmCookies;
-  };
-
   useInterval(() => {
-    const generatedCookies = calculateCookiesPerTick();
+    const generatedCookies = calculateCookiesPerTick(purchasedItems);
 
     setCookieCount(cookieCount + generatedCookies)
   }, 1000);
+
+  React.useEffect(() => {
+    document.title = `${cookieCount} cookies - Cookie Clicker`
+
+    return () => {
+      document.title = `Cookie Clicker`
+    }
+  }, [cookieCount])
 
   return (
     <Wrapper>
       <GameArea>
         <Indicator>
           <Total>{cookieCount} cookies</Total>
-          <strong>{calculateCookiesPerTick()}</strong> cookies per second
+          <strong>{calculateCookiesPerTick(purchasedItems)}</strong> cookies per second
         </Indicator>
         <Button onClick={() => setCookieCount(cookieCount + 1)}>
           <Cookie src={cookieSrc} />
