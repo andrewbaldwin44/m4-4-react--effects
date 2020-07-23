@@ -13,23 +13,24 @@ const items = [
 ];
 
 const Game = () => {
-  // TODO: Replace this with React state!
-  const numCookies = 100;
-  const purchasedItems = {
-    cursor: 0,
-    grandma: 0,
-    farm: 0,
-  };
+  const [cookieCount, setCookieCount] = React.useState(100);
+  const [purchasedItems, setPurchasedItems] = React.useState(
+    {
+      cursor: 0,
+      grandma: 0,
+      farm: 0,
+    }
+  )
 
   return (
     <Wrapper>
       <GameArea>
         <Indicator>
-          <Total>{numCookies} cookies</Total>
+          <Total>{cookieCount} cookies</Total>
           {/* TODO: Calcuate the cookies per second and show it here: */}
           <strong>0</strong> cookies per second
         </Indicator>
-        <Button>
+        <Button onClick={() => setCookieCount(cookieCount + 1)}>
           <Cookie src={cookieSrc} />
         </Button>
       </GameArea>
@@ -40,10 +41,14 @@ const Game = () => {
           return (
             <Item
               key={item.id}
+              id={item.id}
               name={item.name}
               cost={item.cost}
               value={item.value}
+              cookieCount={cookieCount}
+              setCookieCount={setCookieCount}
               purchasedItems={purchasedItems}
+              setPurchasedItems={setPurchasedItems}
             />
           )
         })}

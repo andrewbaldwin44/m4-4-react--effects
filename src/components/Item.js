@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 const ItemContainer = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 420px;
   height: 50px;
   border: none;
@@ -10,13 +13,14 @@ const ItemContainer = styled.button`
   background-color: transparent;
   border-bottom: 1px solid #424242;
   cursor: pointer;
-  z-index: 100;
+  z-index: 1000;
 `;
 
 const ItemInfo = styled.div`
   display: flex;
   flex-direction: column;
-`
+  pointer-events: none;
+`;
 
 const Name = styled.span`
   font-weight: bold;
@@ -26,30 +30,45 @@ const Name = styled.span`
 const Info = styled.span`
   font-size: 16px;
   color: lightgray;
-`
+`;
 
-function Item({ name, cost, value, purchasedItems }) {
-  const [count, setCount] = React.useState(0);
+const Purchased = styled.span`
+  font-size: 26px;
+  margin-right: 10px;
+  pointer-events: none;
+`;
 
-  const handleClick = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    console.log(e.target)
+function Item({ id, name, cost, value, cookieCount, setCookieCount,
+                purchasedItems, setPurchasedItems }) {
+
+  const amountPurchased = purchasedItems[id];
+
+  const handleClick = (id) => {
+    if (cookieCount >= cost) {
+      setPurchasedItems({
+        ...purchasedItems,
+        [id]: purchasedItems[id] + 1
+      });
+
+      setCookieCount(cookieCount - cost);
+    }
   }
 
   return (
-    <ItemContainer
-      onClick={handleClick}
-      value={name}
-    >
-      <ItemInfo>
-        <Name>{name}</Name>
-        <Info>
-          Cost: {cost} cookie{cost > 1 ? 's' : ''}.
-          Produces {value} cookie{value > 1 ? 's' : ''}.second.
-        </Info>
-      </ItemInfo>
-    </ItemContainer>
+    <>
+      <ItemContainer
+        onClick={() => handleClick(id)}
+      >
+        <ItemInfo>
+          <Name>{name}</Name>
+          <Info>
+            Cost: {cost} cookie{cost > 1 ? 's' : ''}.
+            Produces {value} cookie{value > 1 ? 's' : ''}.second.
+          </Info>
+        </ItemInfo>
+        <Purchased>{amountPurchased}</Purchased>
+      </ItemContainer>
+    </>
   )
 }
 
