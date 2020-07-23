@@ -63,7 +63,7 @@ function Item({ id, name, cost, value, cookieCount, setCookieCount,
           <Name>{name}</Name>
           <Info>
             Cost: {cost} cookie{cost > 1 ? 's' : ''}.
-            Produces {value} cookie{value > 1 ? 's' : ''}.second.
+            Produces {value} cookie{value > 1 ? 's' : ''}/second.
           </Info>
         </ItemInfo>
         <Purchased>{amountPurchased}</Purchased>
