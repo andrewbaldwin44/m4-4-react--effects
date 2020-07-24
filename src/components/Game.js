@@ -11,39 +11,38 @@ import useKeydown from '../hooks/useKeydown.hook';
 import useDocumentTitle from '../hooks/useDocumentTitle.hook';
 
 const items = [
-  { id: "cursor", name: "Cursor", cost: 10, value: 1 },
-  { id: "grandma", name: "Grandma", cost: 100, value: 10 },
-  { id: "farm", name: "Farm", cost: 1000, value: 80 },
+  { id: "cursor", name: "Cursor", cost: 10, value: 1, clicker: false },
+  { id: "grandma", name: "Grandma", cost: 100, value: 10, clicker: false },
+  { id: "farm", name: "Farm", cost: 1000, value: 80, clicker: false },
+  { id: "megaCursor", name: "Mega Cursor", cost: 50_000, value: 1000, clicker: true },
+  { id: "gordonRamsay", name: "Gordon Ramsay", cost: 100_000, value: 10_000, clicker: false }
 ];
 
-const findItemValue = (id) => {
-  return items.find(item => item.id === id);
-}
+const initialPurchased = items.reduce((purchasedItems, item) => {
+  purchasedItems[item.id] = 0;
+  return purchasedItems;
+}, {});
 
-const calculateCookiesPerTick = purchasedItems => {
-  const cursorCookiesValue = findItemValue('cursor').value;
-  const grandmaCookiesValue = findItemValue('grandma').value;
-  const farmCookiesValue = findItemValue('farm').value;
-
-  const cursorCookies = purchasedItems.cursor * cursorCookiesValue;
-  const grandmaCookies = purchasedItems.grandma * grandmaCookiesValue;
-  const farmCookies = purchasedItems.farm * farmCookiesValue;
-
-  return cursorCookies + grandmaCookies + farmCookies;
+const calculatePowerUps = (purchasedItems, clicker = false) => {
+  return items.reduce((cookiesPerTick, item) => {
+    if (item.clicker === clicker) {
+      return cookiesPerTick += item.value * purchasedItems[item.id];
+    } else return cookiesPerTick;
+  }, 0);
 };
 
 const Game = () => {
   const [cookieCount, setCookieCount] = React.useState(100);
-  const [purchasedItems, setPurchasedItems] = React.useState(
-    {
-      cursor: 0,
-      grandma: 0,
-      farm: 0,
-    }
-  );
+  const [purchasedItems, setPurchasedItems] = React.useState(initialPurchased);
+
+  const handleClick = () => {
+    const clickValue = calculatePowerUps(purchasedItems, true);
+
+    setCookieCount(cookieCount + clickValue);
+  }
 
   useInterval(() => {
-    const generatedCookies = calculateCookiesPerTick(purchasedItems);
+    const generatedCookies = calculatePowerUps(purchasedItems);
 
     setCookieCount(cookieCount + generatedCookies)
   }, 1000);
@@ -56,9 +55,9 @@ const Game = () => {
       <GameArea>
         <Indicator>
           <Total>{cookieCount} cookies</Total>
-          <strong>{calculateCookiesPerTick(purchasedItems)}</strong> cookies per second
+          <strong>{calculatePowerUps(purchasedItems)}</strong> cookies per second
         </Indicator>
-        <Button onClick={() => setCookieCount(cookieCount + 1)}>
+        <Button onClick={handleClick}>
           <Cookie src={cookieSrc} />
         </Button>
       </GameArea>
@@ -73,6 +72,7 @@ const Game = () => {
               name={item.name}
               cost={item.cost}
               value={item.value}
+              clicker={item.clicker}
               cookieCount={cookieCount}
               setCookieCount={setCookieCount}
               purchasedItems={purchasedItems}
