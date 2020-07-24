@@ -59,7 +59,7 @@ function Item({ id, name, cost, value, cookieCount, setCookieCount,
     if (id === 'cursor') {
       focusItem.current.focus();
     }
-  }, []);
+  });
 
   return (
     <ItemContainer
