@@ -37,8 +37,10 @@ const Game = () => {
 
   const handleClick = () => {
     const clickValue = calculatePowerUps(purchasedItems, true);
+    const defaultValue = 1;
+    const cookieCountIncrement = clickValue > 0 ? clickValue : defaultValue;
 
-    setCookieCount(cookieCount + clickValue);
+    setCookieCount(cookieCount + cookieCountIncrement);
   }
 
   useInterval(() => {
